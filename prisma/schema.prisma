@@ -1,0 +1,106 @@
+generator client {
+    provider        = "prisma-client"
+    output          = "generated"
+    previewFeatures = ["fullTextSearchPostgres"]
+}
+
+datasource db {
+    provider     = "postgresql"
+    relationMode = "prisma"
+}
+
+// ========================
+// -------- Models --------
+// ========================
+
+model Store {
+    id          Int       @id @default(autoincrement())
+    name        String
+    city        String?
+    url         String
+    reputation  String?
+    warehouseId Int?      @map("warehouse_id")
+    products    Product[]
+
+    @@map("stores")
+}
+
+model Category {
+    id       Int       @id @default(autoincrement())
+    name     String
+    url      String
+    products Product[]
+
+    @@map("categories")
+}
+
+model Discount {
+    id          Int     @id @default(autoincrement())
+    productId   Int     @unique @map("product_id") @ignore
+    name        String?
+    description String?
+
+    percentage Float
+    validFrom  DateTime? @map("valid_from")
+    validTo    DateTime? @map("valid_to")
+
+    products Product[]
+
+    @@index([productId])
+    @@map("discounts")
+}
+
+model ProductImage {
+    id        Int     @id @default(autoincrement())
+    productId Int     @map("product_id") @ignore
+    url       String
+    product   Product @relation(fields: [productId], references: [id], map: "ProductImage_product_fkey", onDelete: Cascade)
+
+    @@index([productId])
+    @@map("product_images")
+}
+
+model Product {
+    id          Int            @id @default(autoincrement())
+    parentId    Int?           @map("parent_id")
+    name        String
+    description String?
+    minOrder    Int            @default(1) @map("min_order")
+    maxOrder    Int            @default(1) @map("max_order")
+    weight      Int?
+    weightUnit  String?        @map("weight_unit")
+    condition   String
+    status      String
+    url         String
+    thumbnail   String?
+    images      ProductImage[]
+    price       Int
+    storeId     Int
+    categoryId  Int
+
+    store     Store      @relation(fields: [storeId], references: [id])
+    category  Category   @relation(fields: [categoryId], references: [id])
+    discount  Discount?  @relation(fields: [id], references: [productId], map: "Product_discount_fkey", onDelete: Cascade)
+    statistic Statistic? @relation(fields: [id], references: [productId], map: "Product_statistic_fkey", onDelete: Cascade)
+
+    @@index([parentId])
+    @@index([storeId])
+    @@index([categoryId])
+    @@map("products")
+}
+
+model Statistic {
+    id                 Int       @id @default(autoincrement())
+    productId          Int       @unique @map("product_id") @ignore
+    transactionSuccess Int       @map("transaction_success")
+    transactionReject  Int       @map("transaction_reject")
+    soldCount          Int       @map("sold_count")
+    viewCount          Int       @map("view_count")
+    reviewCount        Int       @map("review_count")
+    talkCount          Int       @map("talk_count")
+    rating             Float
+    products           Product[]
+
+    @@index([productId])
+    @@map("statistics")
+}
