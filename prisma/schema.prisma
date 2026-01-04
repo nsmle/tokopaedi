@@ -1,6 +1,10 @@
 generator client {
-    provider        = "prisma-client"
-    output          = "generated"
+    provider     = "prisma-client-js"
+    moduleFormat = "esm"
+    adapter      = "pg"
+    runtime      = "vercel-edge"
+    output       = "../.next/prisma"
+
     previewFeatures = ["fullTextSearchPostgres"]
 }
 
@@ -14,29 +18,33 @@ datasource db {
 // ========================
 
 model Store {
-    id          Int       @id @default(autoincrement())
+    id          BigInt    @id @default(autoincrement())
+    slug        String    @unique
     name        String
     city        String?
     url         String
     reputation  String?
-    warehouseId Int?      @map("warehouse_id")
+    warehouseId BigInt?   @map("warehouse_id")
     products    Product[]
 
+    @@index([slug])
     @@map("stores")
 }
 
 model Category {
-    id       Int       @id @default(autoincrement())
+    id       BigInt    @id @default(autoincrement())
+    slug     String    @unique
     name     String
     url      String
     products Product[]
 
+    @@index([slug])
     @@map("categories")
 }
 
 model Discount {
-    id          Int     @id @default(autoincrement())
-    productId   Int     @unique @map("product_id") @ignore
+    id          BigInt  @id @default(autoincrement())
+    productId   BigInt  @unique @map("product_id")
     name        String?
     description String?
 
@@ -51,8 +59,8 @@ model Discount {
 }
 
 model ProductImage {
-    id        Int     @id @default(autoincrement())
-    productId Int     @map("product_id") @ignore
+    id        String  @id @default(uuid())
+    productId BigInt  @map("product_id")
     url       String
     product   Product @relation(fields: [productId], references: [id], map: "ProductImage_product_fkey", onDelete: Cascade)
 
@@ -61,8 +69,9 @@ model ProductImage {
 }
 
 model Product {
-    id          Int            @id @default(autoincrement())
-    parentId    Int?           @map("parent_id")
+    id          BigInt         @id @default(autoincrement())
+    parentId    BigInt?        @map("parent_id")
+    slug        String         @unique
     name        String
     description String?
     minOrder    Int            @default(1) @map("min_order")
@@ -75,8 +84,8 @@ model Product {
     thumbnail   String?
     images      ProductImage[]
     price       Int
-    storeId     Int
-    categoryId  Int
+    storeId     BigInt
+    categoryId  BigInt
 
     store     Store      @relation(fields: [storeId], references: [id])
     category  Category   @relation(fields: [categoryId], references: [id])
@@ -86,20 +95,22 @@ model Product {
     @@index([parentId])
     @@index([storeId])
     @@index([categoryId])
+    @@index([slug])
     @@map("products")
 }
 
 model Statistic {
-    id                 Int       @id @default(autoincrement())
-    productId          Int       @unique @map("product_id") @ignore
-    transactionSuccess Int       @map("transaction_success")
-    transactionReject  Int       @map("transaction_reject")
-    soldCount          Int       @map("sold_count")
-    viewCount          Int       @map("view_count")
-    reviewCount        Int       @map("review_count")
-    talkCount          Int       @map("talk_count")
-    rating             Float
-    products           Product[]
+    id        BigInt @id @default(autoincrement())
+    productId BigInt @unique @map("product_id")
+    success   Int    @map("transaction_success")
+    reject    Int    @map("transaction_reject")
+    sold      Int    @map("sold_count")
+    view      Int    @map("view_count")
+    review    Int    @map("review_count")
+    talk      Int    @map("talk_count")
+    rating    Float
+
+    products Product[]
 
     @@index([productId])
     @@map("statistics")

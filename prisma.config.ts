@@ -6,7 +6,7 @@ export default {
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
-    seed: `bun run ${path.join("prisma", "seed", "seed.ts")} -- --environment development`,
+    seed: `bun run prisma/seed.ts`,
   },
   views: {
     path: path.join("prisma", "views"),

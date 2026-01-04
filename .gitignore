@@ -46,5 +46,7 @@ next-env.d.ts
 tmp
 temp
 
-# prisma
+# others
 prisma/generated
+public/images
+public/thumbnails
