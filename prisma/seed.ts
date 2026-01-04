@@ -1,11 +1,4 @@
-import {
-  type Category,
-  type Discount,
-  type Product,
-  type ProductImage,
-  type Statistic,
-  type Store,
-} from "@prisma/client";
+import { type Category, type Discount, type Product, type ProductImage, type Statistic, type Store } from "@prisma/client";
 import prisma from "@src/lib/prisma";
 import "dotenv/config";
 import { getDataset } from "./data/dataset";
@@ -16,8 +9,7 @@ const items = await getDataset();
 const stores = items.map(
   (item): Store => ({
     id: BigInt(item.shop_id),
-    slug:
-      item.shop_url.split("/").filter(Boolean).pop() || item.shop_id.toString(),
+    slug: item.shop_url.split("/").filter(Boolean).pop() || item.shop_id.toString(),
     name: item.shop_name,
     city: item.shop_city,
     url: item.shop_url,
@@ -30,9 +22,7 @@ const stores = items.map(
 const categories = items.map(
   (item): Category => ({
     id: BigInt(item.category_id),
-    slug:
-      item.category_url.split("/").filter(Boolean).pop() ||
-      item.category_id.toString(),
+    slug: item.category_url.split("/").filter(Boolean).pop() || item.category_id.toString(),
     name: item.category_name,
     url: item.category_url,
   }),

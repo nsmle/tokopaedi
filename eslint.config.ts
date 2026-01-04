@@ -22,7 +22,7 @@ const eslintConfig = defineConfig([
           semi: true,
           tabWidth: 2,
           singleQuote: false,
-          printWidth: 80,
+          printWidth: 140,
           endOfLine: "auto",
           arrowParens: "always",
           plugins: ["prettier-plugin-tailwindcss"],

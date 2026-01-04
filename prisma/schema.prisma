@@ -1,10 +1,5 @@
 generator client {
-    provider     = "prisma-client-js"
-    moduleFormat = "esm"
-    adapter      = "pg"
-    runtime      = "vercel-edge"
-    output       = "../.next/prisma"
-
+    provider        = "prisma-client-js"
     previewFeatures = ["fullTextSearchPostgres"]
 }
 

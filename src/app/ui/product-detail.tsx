@@ -1,17 +1,14 @@
 "use client";
 
 import { ImageDrawer } from "@src/app/ui/image-drawer";
+import { ProductRecommendation } from "@src/app/ui/product-recommendation";
 import type { getProductBySlug } from "@src/lib/data";
 import { discountedPrice, humanizeNumber } from "@src/util/format.util";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-export function ProductDetail({
-  product,
-}: {
-  product: Awaited<ReturnType<typeof getProductBySlug>>;
-}) {
+export function ProductDetail({ product }: { product: Awaited<ReturnType<typeof getProductBySlug>> }) {
   const [selectedPreviewImageIndex, setSelectedPreviewImageIndex] = useState(0);
 
   return (
@@ -42,51 +39,36 @@ export function ProductDetail({
         {/* Product Title & Description */}
         <div className="w-full lg:w-2/3">
           <div className="h-full w-full lg:pl-12">
-            <div className="sticky top-20 isolate w-full self-start md:top-32">
-              <div className="bg-background absolute -top-6 h-14 w-full lg:-top-32 lg:h-32" />
+            <div className="sticky top-18 isolate w-full self-start sm:top-22 lg:top-32">
+              <div className="bg-background absolute -top-4 h-8 w-full lg:-top-32 lg:h-34" />
 
               <div
-                className="bg-background flex w-full flex-col pt-2 pb-16"
+                className="bg-background flex w-full flex-col pt-2 pb-32 md:pb-24"
                 style={{
-                  maskImage:
-                    "linear-gradient(to bottom,rgb(0, 0, 0),rgb(0, 0, 0) 0%,rgb(0, 0, 0) 70%,rgba(0, 0, 0, 0))",
+                  maskImage: "linear-gradient(to bottom,rgb(0, 0, 0),rgb(0, 0, 0) 0%,rgb(0, 0, 0) 70%,rgba(0, 0, 0, 0))",
                 }}
               >
-                <h1 className="font-sans text-lg leading-tight font-bold lg:text-xl">
-                  {product?.name}
-                </h1>
-                <div className="my-0.5 flex w-full flex-row items-center gap-2 sm:gap-4">
+                <h1 className="font-sans text-lg leading-tight font-bold lg:text-xl">{product?.name}</h1>
+                <div className="my-1 flex w-full flex-row items-center gap-2 overflow-hidden sm:gap-4">
                   <p className="inline-block text-sm font-medium text-nowrap text-gray-500">
-                    <span className="text-gray-700">Terjual</span>{" "}
-                    {humanizeNumber(product?.statistic?.sold)}
+                    <span className="text-gray-700">Terjual</span> {humanizeNumber(product?.statistic?.sold)}
                   </p>
                   <span className="text-gray-400">•</span>
                   <div className="flex flex-row items-center gap-1">
-                    <Image
-                      src="/stars.svg"
-                      alt=""
-                      className="size-4"
-                      width={192}
-                      height={192}
-                    />
+                    <Image src="/stars.svg" alt="" className="size-4" width={192} height={192} />
                     <p className="inline-block text-sm font-medium text-nowrap text-gray-500">
-                      {product?.statistic?.rating}{" "}
-                      <span className="text-gray-700">Rating</span>
+                      {product?.statistic?.rating} <span className="text-gray-700">Rating</span>
                     </p>
                   </div>
-                  <span className="text-gray-400">•</span>
-                  <p className="inline-block text-sm font-medium text-nowrap text-gray-500">
-                    {humanizeNumber(product?.statistic?.review, 2)}{" "}
-                    <span className="text-gray-700">Review</span>
+                  <span className="xs:hidden text-gray-400">•</span>
+                  <p className="xs:hidden text-sm font-medium text-nowrap text-gray-500">
+                    {humanizeNumber(product?.statistic?.review, 2)} <span className="text-gray-700">Review</span>
                   </p>
                 </div>
                 <div className="mt-1 flex w-full flex-row items-center justify-between gap-1 lg:gap-8">
                   <div className="flex w-full flex-row items-center justify-between">
                     <h2 className="font-sans text-lg leading-tight font-bold lg:text-3xl">
-                      {discountedPrice(
-                        product?.price,
-                        product?.discount?.percentage,
-                      ).toLocaleString("id-ID", {
+                      {discountedPrice(product?.price, product?.discount?.percentage).toLocaleString("id-ID", {
                         style: "currency",
                         currency: "IDR",
                         maximumFractionDigits: 0,
@@ -116,14 +98,11 @@ export function ProductDetail({
               </div>
             </div>
 
-            <hr className="-mt-6 mb-6 border-gray-300 md:-mt-4" />
+            <hr className="-mt-12 mb-6 border-gray-300 md:-mt-8" />
 
             <div className="flex w-full flex-col gap-0.5">
               <p className="inline-block text-sm font-medium text-nowrap text-gray-500">
-                Kondisi:{" "}
-                <span className="text-gray-700">
-                  {product?.condition === "New" ? "Baru" : product?.condition}
-                </span>
+                Kondisi: <span className="text-gray-700">{product?.condition === "New" ? "Baru" : product?.condition}</span>
               </p>
               <p className="inline-block text-sm font-medium text-nowrap text-gray-500">
                 Berat:{" "}
@@ -133,26 +112,22 @@ export function ProductDetail({
               </p>
               {product?.minOrder !== 1 && (
                 <p className="inline-block text-sm font-medium text-nowrap text-gray-500">
-                  Min. Pemesanan:{" "}
-                  <span className="text-gray-700">{product?.minOrder}</span>
+                  Min. Pemesanan: <span className="text-gray-700">{product?.minOrder}</span>
                 </p>
               )}
               {product?.maxOrder !== 1 && (
                 <p className="inline-block text-sm font-medium text-nowrap text-gray-500">
-                  Max. Pemesanan:{" "}
-                  <span className="text-gray-700">{product?.maxOrder}</span>
+                  Max. Pemesanan: <span className="text-gray-700">{product?.maxOrder}</span>
                 </p>
               )}
-              <p className="inline-block text-sm font-medium text-nowrap text-gray-500">
-                Category:{" "}
-                <Link
-                  href={product?.category.url || "/"}
-                  target="_blank"
-                  className="text-emerald-600 hover:text-emerald-500"
-                >
-                  {product?.category.name}
-                </Link>
-              </p>
+              {product?.category?.name && (
+                <p className="inline-block text-sm font-medium text-nowrap text-gray-500">
+                  Category:{" "}
+                  <Link href={product?.category?.url || "/"} target="_blank" className="text-emerald-600 hover:text-emerald-500">
+                    {product?.category?.name}
+                  </Link>
+                </p>
+              )}
             </div>
 
             <hr className="my-6 border-gray-300" />
@@ -160,10 +135,7 @@ export function ProductDetail({
             <div className="flex w-full flex-row items-center rounded-md bg-white px-4 py-2.5 shadow-2xl/5 transition-all duration-300 hover:shadow-2xl/20">
               <div className="flex w-full flex-col">
                 <p className="font-sans text-[16px] font-semibold text-wrap wrap-anywhere whitespace-pre-line text-gray-700/90">
-                  {product?.store.name}{" "}
-                  <span className="ml-0.5 text-xs text-gray-500/80">
-                    @{product?.store.slug}
-                  </span>
+                  {product?.store.name} <span className="ml-0.5 text-xs text-gray-500/80">@{product?.store.slug}</span>
                 </p>
                 <p className="font-sans text-sm font-medium text-wrap wrap-anywhere whitespace-pre-line text-gray-600">
                   {product?.store.city}
@@ -178,9 +150,7 @@ export function ProductDetail({
               </Link>
             </div>
 
-            {product?.description?.trim() && (
-              <hr className="my-6 border-gray-300" />
-            )}
+            {product?.description?.trim() && <hr className="my-6 border-gray-300" />}
 
             <p className="font-sans text-sm font-medium text-wrap wrap-anywhere whitespace-pre-line text-gray-700">
               {product?.description}
@@ -189,9 +159,23 @@ export function ProductDetail({
         </div>
       </div>
 
-      {/* Recomender */}
-      <div className="sticky top-32 w-full self-start bg-orange-400 py-4">
-        <div className="min-h-[5000px] w-full bg-yellow-400"></div>
+      <div className="sticky top-18 isolate z-40 flex w-full flex-col self-start sm:top-22 lg:top-28">
+        <div className="bg-background absolute -top-4 h-8 w-full lg:-top-12 lg:h-14" />
+        <div
+          className="bg-background flex w-full flex-col gap-3 pb-16 md:pb-28"
+          style={{
+            maskImage: "linear-gradient(to bottom,rgb(0, 0, 0),rgb(0, 0, 0) 0%,rgb(0, 0, 0) 42%,rgba(0, 0, 0, 0))",
+          }}
+        >
+          <hr className="border-gray-300" />
+          <span className="md:text-md px-2 font-sans text-sm font-bold text-gray-600 md:px-4 lg:my-4">Rekomendasi untuk mu</span>
+          <hr className="border-gray-300" />
+        </div>
+      </div>
+
+      {/* Recommendation */}
+      <div className="-mt-14 w-full self-start py-4 pb-48 md:-mt-24">
+        <ProductRecommendation product={product} />
       </div>
     </div>
   );

@@ -2,13 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-export function ButtonLoadMore({
-  onClick,
-  isLoading,
-}: {
-  isLoading: boolean;
-  onClick: () => void;
-}) {
+export function ButtonLoadMore({ onClick, isLoading }: { isLoading: boolean; onClick: () => void }) {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -34,7 +28,7 @@ export function ButtonLoadMore({
       ref={buttonRef}
       onClick={onClick}
       disabled={isLoading}
-      className="text-background col-span-6 flex cursor-pointer flex-row items-center justify-center gap-2 rounded-md bg-emerald-400 px-4 py-2.5 font-sans text-sm font-semibold shadow-lg transition-all duration-300 hover:bg-emerald-500 hover:shadow-2xl hover:shadow-blue-950/40 active:scale-95"
+      className="text-background col-span-6 flex cursor-pointer flex-row items-center justify-center gap-2 rounded-md bg-emerald-400 px-4 py-2.5 font-sans text-sm font-semibold shadow-lg transition-all duration-300 hover:bg-emerald-500 hover:shadow-2xl hover:shadow-blue-950/40 active:scale-95 disabled:cursor-wait"
     >
       {isLoading ? (
         <>

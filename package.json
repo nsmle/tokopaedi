@@ -1,8 +1,16 @@
 {
   "name": "sistem-rekomendasi-product",
-  "version": "0.1.0",
+  "description": "Sistem Rekomendasi Product E-commerce Menggunakan Metode Content-Based Filtering",
+  "version": "1.0.0",
   "type": "module",
   "private": true,
+  "homepage": "https://tokopaedi.fiki.be/",
+  "license": "MIT",
+  "author": {
+    "name": "Fiki Pratama (nsmle)",
+    "email": "hi@fiki.be",
+    "url": "https://fiki.be"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -21,10 +21,7 @@ export function ImageDrawer({
 
   return (
     <div className="relative z-10 w-full lg:mt-4">
-      <div
-        ref={imagesContainerRef}
-        className="horizontal-scrollbar flex w-full gap-x-1.5 overflow-x-auto px-1 pt-3.5 pb-2"
-      >
+      <div ref={imagesContainerRef} className="horizontal-scrollbar flex w-full gap-x-1.5 overflow-x-auto px-1 pt-3.5 pb-2">
         {images.map((image, index) => (
           <button
             key={`drawer-${image.id}-${image.url}`}
@@ -52,7 +49,6 @@ export function ImageDrawer({
       {images.length > 4 && (
         <>
           {/* Drawer prev  */}
-
           <button
             type="button"
             className="absolute top-1/2 left-1 z-30 flex -translate-y-1/2 transform cursor-pointer items-center justify-center rounded-md bg-emerald-300/40 p-1.5 text-white shadow-lg backdrop-blur-xs hover:bg-emerald-400/50"
@@ -66,16 +62,11 @@ export function ImageDrawer({
               stroke="currentColor"
               className="size-4"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.75 19.5L8.25 12l7.5-7.5"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
             </svg>
           </button>
 
           {/* Drawer next */}
-
           <button
             type="button"
             className="absolute top-1/2 right-1 z-30 flex -translate-y-1/2 transform cursor-pointer items-center justify-center rounded-md bg-emerald-300/40 p-1.5 text-white shadow-lg backdrop-blur-xs hover:bg-emerald-400/50"
@@ -89,11 +80,7 @@ export function ImageDrawer({
               stroke="currentColor"
               className="size-4"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8.25 4.5l7.5 7.5-7.5 7.5"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
           </button>
         </>

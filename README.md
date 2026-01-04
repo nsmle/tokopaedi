@@ -15,14 +15,14 @@ Alur penelititan:
      ↓
 [Recommendation Engine]
      ↓
-[REST API / Backend Service]
+[Backend Service]
      ↓
-[Frontend / Marketplace UI]
+[Marketplace UI]
 ```
 
 ## Setup & Installation
 
-_Note_: Jika menggunakan package manager [npm](https://npmjs.com/) maka ganti `bun` dengan `npm` dan `bunx` menjadi `npx` disetiap perintah dibawah.
+> **Note**: [Install bun](https://bun.com/docs/installation).
 
 #### Install Dependencies
 
@@ -40,7 +40,7 @@ bun install
 
 #### Setup Images & Thumbnail
 
-Images dan thumbnails tidak di commit ataupun disertakan dalam repository ini karena sizenya yang terlalu besar, images & thumbnails product terletak pada path `public/images` dan `public/thumbnails`.
+Images dan thumbnails products tidak di commit ataupun disertakan dalam repository ini karena sizenya yang terlalu besar, images & thumbnails product terletak pada path `public/images` dan `public/thumbnails`.
 Sebagai solusi lain, download image dan thumbnail ini secara terpisah menggunakan perintah berikut:
 
 - Download thumbnails:
@@ -57,7 +57,7 @@ curl -L "https://drive.usercontent.google.com/download?export=download&id=1mo-Im
 
 Note: masuk ke working directory root project ini terlebih dahulu sebelum menjalankan perintah diatas.
 
-#### Run Development Development
+#### Run Development Server
 
 Jalankan
 
