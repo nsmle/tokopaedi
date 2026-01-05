@@ -39,8 +39,9 @@ export function ImageDrawer({
               className={`size-full rounded-lg object-cover`}
               width={80}
               height={80}
+              priority={false}
               placeholder="blur"
-              blurDataURL={`/_next/image?url=${encodeURIComponent(`/images/${image.url}`)}&w=32&q=5`}
+              blurDataURL={`/_next/image?url=%2Fimages%2F${image.url}&w=32&q=5`}
             />
           </button>
         ))}

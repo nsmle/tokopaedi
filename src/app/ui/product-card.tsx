@@ -6,7 +6,7 @@ import Link from "next/link";
 export function ProductCard({ product }: { product: ProductWithRelations }) {
   return (
     <div className="group/card overflow-hidden rounded-xl p-0.5 transition-all duration-300 hover:bg-white hover:shadow-2xl hover:shadow-blue-950/40 md:p-1.5 lg:p-2.5">
-      <Link href={`/${product.store.slug}/${product.slug}`} className="w-full bg-red-400" shallow={true}>
+      <Link prefetch={true} href={`/${product.store.slug}/${product.slug}`} className="w-full bg-red-400">
         <div className="relative isolate mb-2 aspect-square w-full overflow-hidden rounded bg-slate-100">
           {product.discount?.percentage && (
             <span className="rounded-tb absolute top-0 left-0 rounded-br-xl bg-rose-500 px-2.5 py-1 font-sans text-[10px] font-bold text-white shadow-2xl group-hover/card:bg-rose-600 md:text-xs">
@@ -19,8 +19,9 @@ export function ProductCard({ product }: { product: ProductWithRelations }) {
             className="size-full rounded object-cover"
             width={400}
             height={400}
+            priority={false}
             placeholder="blur"
-            blurDataURL={`/_next/image?url=${encodeURIComponent(`/thumbnails/${product.thumbnail}`)}&w=32&q=5`}
+            blurDataURL={`/_next/image?url=%2Fthumbnails%2F${product.thumbnail}&w=32&q=5`}
           />
         </div>
         <div className="pb-0.5 transition-all duration-300 md:pb-1.5">
@@ -46,6 +47,7 @@ export function ProductCard({ product }: { product: ProductWithRelations }) {
       </Link>
 
       <Link
+        prefetch={true}
         href={`/${product.store.slug}`}
         className="block truncate text-xs font-medium text-gray-600 transition-all duration-300 group-hover/card:text-gray-700"
       >

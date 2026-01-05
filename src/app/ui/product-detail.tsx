@@ -24,8 +24,9 @@ export function ProductDetail({ product }: { product: Awaited<ReturnType<typeof 
               className="size-full rounded-xl object-cover"
               width={4096}
               height={4096}
+              priority={false}
               placeholder="blur"
-              blurDataURL={`/_next/image?url=${encodeURIComponent(`/images/${product?.images?.[selectedPreviewImageIndex]?.url}`)}&w=32&q=5`}
+              blurDataURL={`/_next/image?url=%2Fimages%2F${product?.images?.[selectedPreviewImageIndex]?.url}&w=48&q=10`}
             />
           </div>
 
@@ -55,7 +56,7 @@ export function ProductDetail({ product }: { product: Awaited<ReturnType<typeof 
                   </p>
                   <span className="text-gray-400">•</span>
                   <div className="flex flex-row items-center gap-1">
-                    <Image src="/stars.svg" alt="" className="size-4" width={192} height={192} />
+                    <Image src="/stars.svg" alt="" className="size-4" width={192} height={192} priority={false} />
                     <p className="inline-block text-sm font-medium text-nowrap text-gray-500">
                       {product?.statistic?.rating} <span className="text-gray-700">Rating</span>
                     </p>
