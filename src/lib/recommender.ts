@@ -1,6 +1,6 @@
 import { getProductById, getProductsForRecommender, type ProductWithRelations } from "@src/lib/data";
+import { STOPWORDS } from "@src/util/stopwords.util";
 import { AggressiveTokenizerId, StemmerId, TfIdf, type TfIdfDocument, type TfIdfTerm } from "natural";
-import { eng as stopwordsEn, ind as stopwordsId } from "stopword";
 
 export class Recommender {
   private tfIdf: TfIdf;
@@ -35,7 +35,7 @@ export class Recommender {
     feature = feature
       .replace(/<[^>]*>/g, " ") // HTML tags
       .replace(/[\u{1F600}-\u{1F6FF}]/gu, "") // Emoji
-      .replace(/[^a-zA-Z0-9\s]/g, " ") // Symbols
+      .replace(/[^a-zA-Z\s]/g, " ") // Symbols and numbers
       .replace(/\s+/g, " ") // Extra spaces
       .toLowerCase() // Lowercase
       .trim();
@@ -45,7 +45,6 @@ export class Recommender {
     let tokens = tokenizer.tokenize(feature) as string[];
 
     // Stopword Removal (Bahasa Indonesia)
-    const STOPWORDS = new Set([...new Set(stopwordsId), ...new Set(stopwordsEn)]);
     tokens = tokens.filter((word): boolean => !STOPWORDS.has(word));
 
     // Stemming
@@ -75,8 +74,7 @@ export class Recommender {
       magnitudeB += valB * valB;
     }
 
-    if (magnitudeA === 0 || magnitudeB === 0) return 0;
-    return dotProduct / (Math.sqrt(magnitudeA) * Math.sqrt(magnitudeB));
+    return (dotProduct / (Math.sqrt(magnitudeA) * Math.sqrt(magnitudeB))) * 10; // Scale similarity to 0-10 range
   }
 
   async recommendations(productId: number | bigint, topN?: number): Promise<Array<{ productId: number; score: number }>> {
@@ -87,9 +85,9 @@ export class Recommender {
 
     const scores: Array<{ productId: number; score: number }> = [];
 
-    console.log(
-      ` 🚀 [COSINE-SIMILARITY]: Calculating similarities for Product ID: ${productId} -> Total Documents: ${this.tfIdf.documents.length}`,
-    );
+    // console.log(
+    //   ` 🚀 [COSINE-SIMILARITY]: Calculating similarities for Product ID: ${productId} -> Total Documents: ${this.tfIdf.documents.length}`,
+    // );
 
     for (const [otherProductId, index] of this.tfIdfIndex.entries()) {
       // console.log(`Calculating similarity between Product ${productId} and Product ${otherProductId}`);
@@ -99,7 +97,7 @@ export class Recommender {
       scores.push({ productId: otherProductId, score });
     }
 
-    console.log(` 🚀 [COSINE-SIMILARITY]: Similarities calculated. Product ID: ${productId}  with Results: ${scores.length}`);
+    // console.log(` 🚀 [COSINE-SIMILARITY]: Similarities calculated. Product ID: ${productId}  with Results: ${scores.length}`);
 
     scores.sort((a, b) => b.score - a.score);
     return !topN ? scores : scores.slice(0, topN);

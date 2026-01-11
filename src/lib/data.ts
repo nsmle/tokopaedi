@@ -3,16 +3,48 @@
 import type { Prisma } from "@prisma/client";
 import prisma from "@src/lib/prisma";
 import { safeObject } from "@src/util/format.util";
+import { file } from "bun";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { unstable_cache } from "next/cache";
+import path from "path";
 
 export type ProductWithRelations = Prisma.ProductGetPayload<{
   include: { store: true; discount: true; statistic: true; category: true };
 }>;
 
-const cache = (key: string, fn: () => Promise<any>) => {
-  return unstable_cache(fn, [key], { revalidate: 604800 })();
-  // return fn();
+/**
+ * ====== LOCAL CACHE HANDLER ======
+ */
+
+const CACHE_PATH = path.resolve(__dirname, "..", "..", ".next", "cache", "local-cache.json");
+
+if (!existsSync(path.dirname(CACHE_PATH))) mkdirSync(path.dirname(CACHE_PATH), { recursive: true });
+if (!existsSync(CACHE_PATH)) writeFileSync(CACHE_PATH, JSON.stringify({}));
+
+const caches = new Map<string, { timestamp: number; data: any }>(Object.entries(JSON.parse(readFileSync(CACHE_PATH, "utf-8"))));
+
+const localCache = async (key: string, fn: () => Promise<any>, { revalidate }: { revalidate: number }) => {
+  const now = Date.now();
+  const cached = caches.get(key);
+  if (cached && now - cached.timestamp < revalidate * 1000) return cached.data;
+  const data = await fn();
+
+  caches.set(key, { timestamp: now, data });
+  await file(CACHE_PATH).write(JSON.stringify(Object.fromEntries(caches)));
+  return data;
 };
+
+const cache = (key: string, fn: () => Promise<any>) => {
+  if (typeof process !== "undefined" && typeof process.env.NEXT_RUNTIME === "string")
+    return unstable_cache(fn, [key], { revalidate: 604800 })();
+
+  console.log(` ⚡ [Local Cache]: Using local cache for key "${key}"`);
+  return localCache(key, fn, { revalidate: 604800 });
+};
+
+/**
+ * ====== DATA FETCHER FUNCTIONS ======
+ */
 
 export async function getProductsCount(storeSlug?: string): Promise<number> {
   return cache(`products-count-${storeSlug || "all"}`, async () => {
@@ -65,7 +97,7 @@ export async function getProducts(opt?: {
   ids?: number[];
   limit?: number;
 }): Promise<ProductWithRelations[]> {
-  const cacheKey = `products-${opt?.cursor || "start"}-${opt?.store || "all"}-${opt?.ids ? opt.ids.join("-") : "all"}-${opt?.limit || 30}`;
+  const cacheKey = `products-${opt?.cursor || "start"}-${opt?.store || "all"}-${opt?.ids ? opt.ids.join("-") : "all"}-${opt?.limit || "all"}`;
   return cache(cacheKey, async () => {
     const products = await prisma.product.findMany({
       ...(opt?.store && {
@@ -74,8 +106,10 @@ export async function getProducts(opt?: {
       ...(opt?.ids && {
         where: { id: { in: opt.ids } },
       }),
+      ...(opt?.limit && {
+        take: opt.limit,
+      }),
 
-      take: opt?.limit || 30,
       select: {
         id: true,
         slug: true,
